@@ -89,4 +89,24 @@ public class Quarto {
     public void sujar() {
         estaLimpo = false;
     }
+
+    // Método chamado quando um quarto precisa de limpeza
+    public void solicitarLimpeza() {
+        Recepcionista recepcionista = new Recepcionista(null);
+        recepcionista.chamarCamareira(); // Chama a camareira para limpar o quarto
+    }
+
+    // Método chamado pelo hóspede quando ele sai para passear
+    public void esperarLiberacao() {
+        lock.lock();
+        try {
+            while (!estaVazio()) {
+                quartoLivre.await(); // Aguarda até que o quarto esteja vazio
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            lock.unlock();
+        }
+    }
 }
