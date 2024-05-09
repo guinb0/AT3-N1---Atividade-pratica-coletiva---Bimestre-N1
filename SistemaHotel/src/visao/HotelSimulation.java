@@ -37,7 +37,21 @@ public class HotelSimulation {
         }
 
         try {
-            Thread.sleep(30000); // Aguarda a simulação por 30 segundos
+            // Simulação por 30 segundos
+            Thread.sleep(30000);
+
+            // Simular hóspedes saindo após 30 segundos
+            for (Hospede hospede : hospedes) {
+                hospede.interrupt(); // Interrompe a execução dos hóspedes
+            }
+
+            // Aguardar a execução das threads dos hóspedes
+            for (Hospede hospede : hospedes) {
+                hospede.join(); // Aguarda a finalização da thread do hóspede
+            }
+
+            // Simular mais 30 segundos para limpeza dos quartos
+            Thread.sleep(30000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -45,4 +59,3 @@ public class HotelSimulation {
         System.out.println("Fim da simulação.");
     }
 }
-
