@@ -36,6 +36,18 @@ public class Hospede extends Thread {
                 }
 
                 quarto.sair(tamanhoGrupo); // Sair do quarto
+
+                // Simular passeio pela cidade
+                System.out.println(getName() + " saiu para passear.");
+                try {
+                    TimeUnit.SECONDS.sleep(random.nextInt(10) + 5); // Hospede passeia por um tempo
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+
+                // Retorna ao hotel
+                System.out.println(getName() + " voltou para o hotel.");
+                quarto.esperarLiberacao(); // Espera o quarto ser liberado
                 quarto.devolverChave(); // Deixar a chave na recepção
                 System.out.println(getName() + " deixou a chave do quarto " + quarto.getNumero() + " na recepção.");
                 recepcionista.notificarQuartoDisponivel(); // Notifica que um quarto está disponível
