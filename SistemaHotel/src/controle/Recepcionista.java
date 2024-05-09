@@ -1,8 +1,9 @@
 package controle;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -11,19 +12,25 @@ public class Recepcionista extends Thread {
     private final ReentrantLock lock;
     private final Condition temQuartoDisponivel;
     private final Queue<Hospede> filaEspera;
+    private final List<Camareira> camareiras;
 
     public Recepcionista(List<Quarto> quartos) {
-        this.quartos = quartos;
+        this.quartos = quartos != null ? quartos : new ArrayList<>(); // Inicializa a lista de quartos
         this.lock = new ReentrantLock();
         this.temQuartoDisponivel = lock.newCondition();
-        this.filaEspera = new LinkedList<>();
+        this.filaEspera = new ConcurrentLinkedQueue<>(); // Utiliza ConcurrentLinkedQueue para thread safety
+        this.camareiras = new ArrayList<>();
+    }
+
+    public void adicionarCamareira(Camareira camareira) {
+        camareiras.add(camareira);
     }
 
     public Quarto reservarQuarto(int tamanhoGrupo) {
         lock.lock();
         try {
-            while (!existeQuartoDisponivel(tamanhoGrupo)) {
-                temQuartoDisponivel.await();
+            if (quartos.isEmpty() || !existeQuartoDisponivel(tamanhoGrupo)) {
+                return null;
             }
 
             for (Quarto quarto : quartos) {
@@ -33,9 +40,6 @@ public class Recepcionista extends Thread {
                 }
             }
 
-            return null;
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
             return null;
         } finally {
             lock.unlock();
@@ -74,6 +78,15 @@ public class Recepcionista extends Thread {
 
     public void cadastrarHospede(Hospede hospede) {
         System.out.println("Recepcionista cadastrou " + hospede.getName() + " como hóspede.");
+    }
+
+    // Método para chamar camareiras quando necessário
+    public void chamarCamareira() {
+        for (Camareira camareira : camareiras) {
+            synchronized (camareira) {
+                camareira.notify(); // Notifica a camareira para verificar se há quartos para limpar
+            }
+        }
     }
 
     @Override
