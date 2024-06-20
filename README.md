@@ -13,7 +13,7 @@ Feito em Java 17 que simula um sistema de reserva e controle de quartos em um ho
 ## Autores
 
 - [Artur Vivacqua Brandão](https://github.com/ArturVivacqua)
-- [Bruno Lucas Caixeta Braga](https://github.com/MarianaDiasA)
+- [Bruno Lucas Caixeta Braga](https://github.com/bruno2004braga)
 - [Guilherme Nunes Bezerra](https://github.com/guinb0)
 - [Davi Brito Silva e Souza](https://github.com/ivadzz)
 
